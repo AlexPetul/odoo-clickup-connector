@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="clicker_backend_auth_form_view" model="ir.ui.view">
+        <field name="name">clicker.backend.auth.form</field>
+        <field name="model">clicker.backend.auth</field>
+        <field name="arch" type="xml">
+            <form string="ClickUp Auth">
+                <group>
+                    <group>
+                        <field name="method" widget="radio"/>
+                        <field name="token" attrs="{'invisible': [('method', '=', 'oauth')], 'required': [('method', '=', 'token')]}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="authenticate_with_token" string="Authenticate" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clicker_auth" model="ir.actions.act_window">
+        <field name="name">ClickUp Auth</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">clicker.backend.auth</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="clicker_backend_auth_form_view" />
+        <field name="target">new</field>
+    </record>
+
+</odoo>

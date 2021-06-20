@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+    <record id="clicker_backend_demo" model="clicker.backend">
+        <field name="name">ClickUp</field>
+        <field name="uri">http://clickup:8080</field>
+    </record>
+</odoo>

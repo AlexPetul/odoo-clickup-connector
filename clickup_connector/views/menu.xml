@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="project_clicker_menu"
+              name="ClickUp"
+              parent="project.menu_main_pm"
+              sequence="100"/>
+
+    <menuitem id="project_clicker_backends_menu_item"
+              name="Backends"
+              parent="project_clicker_menu"
+              sequence="2"
+              action="project_clicker_backends_menu_action"/>
+
+    <menuitem id="project_clicker_spaces_menu_item"
+              name="Spaces"
+              parent="project_clicker_menu"
+              sequence="1"
+              action="project_clicker_spaces_menu_action"/>
+
+</odoo>

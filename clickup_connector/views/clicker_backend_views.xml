@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="clicker_backend_form_view" model="ir.ui.view">
+        <field name="name">clicker.backend.form</field>
+        <field name="model">clicker.backend</field>
+        <field name="arch" type="xml">
+            <form string="ClickUp Backend">
+                <header>
+                    <button name="%(action_clicker_auth)d"
+                            type="action"
+                            class="oe_highlight"
+                            string="Authenticate"
+                            states="authenticate"/>
+                    <button name="activate"
+                            type="object"
+                            class="oe_highlight"
+                            string="Activate"
+                            states="setup"/>
+                    <button name="reset"
+                            type="object"
+                            string="Reset"
+                            states="setup,running"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_space_ids"
+                                class="oe_stat_button"
+                                type="object"
+                                icon="fa-dedent"
+                                attrs="{'invisible': [('space_ids_count', '=', 0)]}">
+                            <field string="Spaces" name="space_ids_count" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1>
+                        <field name="name" class="oe_inline"/>
+                    </h1>
+                    <group>
+                        <group name="api_configuration" string="API Configuration">
+                            <field name="uri" placeholder="e.g. https://example.com/jira"/>
+                        </group>
+                        <group name="main_configuration" string="Main Configuration">
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="clicker_backend_tree_view" model="ir.ui.view">
+        <field name="name">clicker.backend.tree</field>
+        <field name="model">clicker.backend</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="uri"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="project_clicker_backends_menu_action" model="ir.actions.act_window">
+        <field name="name">ClickUp Backends</field>
+        <field name="res_model">clicker.backend</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

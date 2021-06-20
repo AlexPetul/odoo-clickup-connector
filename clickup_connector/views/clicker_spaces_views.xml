@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="clicker_space_kanban_view" model="ir.ui.view">
+        <field name="name">clicker.space.kanban</field>
+        <field name="model">clicker.space</field>
+        <field name="arch" type="xml">
+            <kanban create="0" sample="1" class="o_kanban_dashboard">
+                <field name="color"/>
+                <field name="name"/>
+                <field name="clicker_backend_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click">
+                            <div class="o_project_kanban_main">
+                                <div class="o_kanban_card_content">
+                                    <div class="o_kanban_primary_left">
+                                        <div class="o_primary">
+                                            <span><t t-esc="record.name.value"/></span>
+                                            <span t-if="record.clicker_backend_id">
+                                                <strong><t t-esc="record.clicker_backend_id.value"/></strong>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <div class="o_kanban_card_manage_section o_kanban_manage_reports">
+                                        <div role="menuitem">
+                                            <a>Share</a>
+                                        </div>
+                                        <div role="menuitem">
+                                            <a type="edit">Edit</a>
+                                        </div>
+                                    </div>
+                                    <div role="menuitem" aria-haspopup="true" class="o_no_padding_kanban_colorpicker">
+                                        <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
+                                    </div>
+                                </div>
+                                <a class="o_kanban_manage_toggle_button o_left" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                            </div>
+                            <div class="o_project_kanban_boxes">
+                                <a class="o_project_kanban_box">
+                                    <div class="col-md-4 kanban-tasks-count" style="display: inline-block; padding-left: 0;">
+                                        <span class="o_value">1</span>
+                                        <span class="o_label">Tasks</span>
+                                    </div>
+                                    <div class="col-md-4 kanban-tasks-count" style="display: inline-block; padding-left: 0;">
+                                        <span class="o_value">1</span>
+                                        <span class="o_label">Tasks</span>
+                                    </div>
+                                    <div class="col-md-3 kanban-tasks-count" style="display: inline-block; padding-left: 0;">
+                                        <span class="o_value">1</span>
+                                        <span class="o_label">Tasks</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="clicker_space_form_view" model="ir.ui.view">
+        <field name="name">clicker.space.form</field>
+        <field name="model">clicker.space</field>
+        <field name="arch" type="xml">
+            <form string="ClickUp Space">
+                <sheet>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="project_clicker_spaces_menu_action" model="ir.actions.act_window">
+        <field name="name">ClickUp Spaces</field>
+        <field name="res_model">clicker.space</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+</odoo>
