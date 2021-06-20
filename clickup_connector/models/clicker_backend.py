@@ -48,21 +48,41 @@ class ClickerBackend(models.Model):
             "domain": [("clicker_backend_id", "=", self.id)]
         }
 
+    def _fetch_lists(self, request_manager, space_id):
+        response, status = request_manager.get_lists_by_space_id(space_id)
+        if status == 200:
+            return response.get("lists", [])
+
+    def _fetch_folder_lists(self, request_manager, space_id, clicker_space_id):
+        lists = list()
+        response, status = request_manager.get_folders_by_space_id(clicker_space_id)
+        if status == 200:
+            folders = response.get("folders", [])
+            space_id.folders_count = len(folders)
+            for folder in folders:
+                response, status = request_manager.get_lists_by_folder_id(folder["id"])
+                if status == 200:
+                    lists.append(response.get("lists"))
+        return lists
+
     def activate(self):
-        api_uri = self.env["ir.config_parameter"].sudo().get_param('clickup_connector.clicker_api_uri')
-        response, status = RequestsManager.execute_get(api_uri, "team", token=self.token)
+        request_manager = RequestsManager(self.env, self.token)
+        response, status = request_manager.get_teams()
         if status == 200:
             for team in response.get("teams", []):
-                response, status = RequestsManager.execute_get(api_uri, f'team/{team["id"]}/space', token=self.token)
+                response, status = request_manager.get_spaces_by_team_id(team["id"])
                 for space in response.get("spaces", []):
-                    if not space["id"] in self.space_ids.mapped("clicker_id"):
-                        self.env["clicker.space"].create({
-                            "name": space["name"],
-                            "clicker_backend_id": self.id,
-                            "clicker_id": space["id"],
-                        })
-                        print(RequestsManager.execute_get(api_uri, f'space/{space["id"]}/list', token=self.token))
-                        self.state = "running"
+                    folder_lists = self._fetch_folder_lists(request_manager, space_id, space["id"])
+                    raw_lists = self._fetch_lists(request_manager, space["id"])
+                    clicker_lists = folder_lists + raw_lists
+
+                    space_id = self.env["clicker.space"].create({
+                        "name": space["name"],
+                        "clicker_backend_id": self.id,
+                        "clicker_id": space["id"]
+                    })
+
+                    self.state = "running"
 
     def reset(self):
         self.state = "authenticate"
