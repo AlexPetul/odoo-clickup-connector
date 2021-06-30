@@ -5,17 +5,19 @@
         <field name="name">clicker.backend.auth.form</field>
         <field name="model">clicker.backend.auth</field>
         <field name="arch" type="xml">
-            <form string="ClickUp Auth">
+            <form string="ClickUp Authentication" js_class="clicker_backend_form">
                 <group>
                     <group>
                         <field name="method" widget="radio"/>
+                        <field name="client_id" attrs="{'invisible': [('method', '=', 'token')], 'required': [('method', '=', 'oauth')]}"/>
                         <field name="token" attrs="{'invisible': [('method', '=', 'oauth')], 'required': [('method', '=', 'token')]}"/>
                     </group>
                 </group>
-                <footer>
-                    <button name="authenticate_with_token" string="Authenticate" type="object" class="oe_highlight"/>
+                <div>
+                    <button string="Connect" class="oe_highlight open_oauth_uri" attrs="{'invisible': [('method', '=', 'token')]}"/>
+                    <button name="authenticate_with_token" string="Authenticate" type="object" class="oe_highlight" attrs="{'invisible': [('method', '=', 'oauth')]}"/>
                     <button string="Cancel" class="oe_link" special="cancel"/>
-                </footer>
+                </div>
             </form>
         </field>
     </record>

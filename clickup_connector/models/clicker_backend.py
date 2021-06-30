@@ -79,7 +79,8 @@ class ClickerBackend(models.Model):
                     space_id = self.env["clicker.space"].create({
                         "name": space["name"],
                         "clicker_backend_id": self.id,
-                        "clicker_id": space["id"]
+                        "clicker_id": space["id"],
+                        "task_lists_count": len(clicker_lists)
                     })
 
                     self.state = "running"

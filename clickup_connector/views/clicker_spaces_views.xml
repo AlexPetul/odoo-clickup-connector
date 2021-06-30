@@ -41,15 +41,15 @@
                             </div>
                             <div class="o_project_kanban_boxes">
                                 <a class="o_project_kanban_box">
-                                    <div class="col-md-4 kanban-tasks-count" style="display: inline-block; padding-left: 0;">
+                                    <div class="col-md-4 kanban-tasks-count">
                                         <span class="o_value">1</span>
                                         <span class="o_label">Tasks</span>
                                     </div>
-                                    <div class="col-md-4 kanban-tasks-count" style="display: inline-block; padding-left: 0;">
+                                    <div class="col-md-4 kanban-tasks-count">
                                         <span class="o_value"><t t-esc="record.folders_count.value"/></span>
                                         <span class="o_label">Folders</span>
                                     </div>
-                                    <div class="col-md-3 kanban-tasks-count" style="display: inline-block; padding-left: 0;">
+                                    <div class="col-md-3 kanban-tasks-count">
                                         <span class="o_value">1</span>
                                         <span class="o_label">Lists</span>
                                     </div>
@@ -75,7 +75,6 @@
                     <group>
                         <group>
                             <field name="clicker_backend_id"/>
-                            <field name="owner_id"/>
                         </group>
                     </group>
                 </sheet>

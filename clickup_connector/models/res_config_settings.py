@@ -6,6 +6,7 @@ class ResConfigSettings(models.TransientModel):
 
     module_clicker = fields.Boolean(string="ClickUp Management", config_parameter="clickup_connector.module_clicker")
     clicker_api_uri = fields.Char(string="API URI", config_parameter="clickup_connector.clicker_api_uri")
+    enable_webhooks = fields.Boolean(string="Enable Webhooks", config_parameter="clickup_connector.enable_webhooks")
 
     @api.model
     def get_values(self):
@@ -14,10 +15,12 @@ class ResConfigSettings(models.TransientModel):
         ir_config = self.env["ir.config_parameter"].sudo()
         clicker_api_uri = ir_config.get_param("clicker_api_uri", default="https://api.clickup.com/api/v2/")
         module_clicker = ir_config.get_param("module_clicker", default=False)
+        enable_webhooks = ir_config.get_param("enable_webhooks", default=True)
 
         res.update({
             "clicker_api_uri": clicker_api_uri,
-            "module_clicker": module_clicker
+            "module_clicker": module_clicker,
+            "enable_webhooks": enable_webhooks
         })
 
         return res
@@ -26,7 +29,10 @@ class ResConfigSettings(models.TransientModel):
         super(ResConfigSettings, self).set_values()
 
         ir_config = self.env["ir.config_parameter"].sudo()
-        if not self.clicker_api_uri.endswith("/"):
+
+        if self.clicker_api_uri and not self.clicker_api_uri.endswith("/"):
             self.clicker_api_uri += "/"
+
         ir_config.set_param("clicker_api_uri", self.clicker_api_uri or "https://api.clickup.com/api/v2/")
         ir_config.set_param("module_clicker", self.module_clicker)
+        ir_config.set_param("enable_webhooks", self.module_clicker)

@@ -24,6 +24,12 @@
                                     <field name="clicker_api_uri" class="oe_inline"/>
                                 </div>
                             </div>
+                            <div class="content-group" attrs="{'invisible': [('module_clicker', '=', False)]}">
+                                <div class="mt16">
+                                    <label for="enable_webhooks" class="o_light_label"/>
+                                    <field name="enable_webhooks" class="oe_inline"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

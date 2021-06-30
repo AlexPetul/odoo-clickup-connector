@@ -14,6 +14,7 @@
         "security/ir.model.access.csv",
         "security/security.xml",
         'wizards/clicker_backend_auth_wizard.xml',
+        "views/assets.xml",
         "views/menu.xml",
         "views/clicker_backend_views.xml",
         "views/clicker_spaces_views.xml",
