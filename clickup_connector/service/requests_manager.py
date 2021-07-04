@@ -31,6 +31,9 @@ class RequestsManager:
     def get_teams(self):
         return self.execute_request("team")
 
+    def get_tasks_by_list_id(self, list_id):
+        return self.execute_request(f"list/{list_id}/task")
+
     def get_spaces_by_team_id(self, team_id):
         return self.execute_request(f"team/{team_id}/space")
 

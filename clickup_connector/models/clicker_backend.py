@@ -48,23 +48,6 @@ class ClickerBackend(models.Model):
             "domain": [("clicker_backend_id", "=", self.id)]
         }
 
-    def _fetch_lists(self, request_manager, space_id):
-        response, status = request_manager.get_lists_by_space_id(space_id)
-        if status == 200:
-            return response.get("lists", [])
-
-    def _fetch_folder_lists(self, request_manager, space_id, clicker_space_id):
-        lists = list()
-        response, status = request_manager.get_folders_by_space_id(clicker_space_id)
-        if status == 200:
-            folders = response.get("folders", [])
-            space_id.folders_count = len(folders)
-            for folder in folders:
-                response, status = request_manager.get_lists_by_folder_id(folder["id"])
-                if status == 200:
-                    lists.append(response.get("lists"))
-        return lists
-
     def activate(self):
         request_manager = RequestsManager(self.env, self.token)
         response, status = request_manager.get_teams()
@@ -72,18 +55,15 @@ class ClickerBackend(models.Model):
             for team in response.get("teams", []):
                 response, status = request_manager.get_spaces_by_team_id(team["id"])
                 for space in response.get("spaces", []):
-                    folder_lists = self._fetch_folder_lists(request_manager, space_id, space["id"])
-                    raw_lists = self._fetch_lists(request_manager, space["id"])
-                    clicker_lists = folder_lists + raw_lists
-
-                    space_id = self.env["clicker.space"].create({
+                    self.env["clicker.space"].create({
                         "name": space["name"],
                         "clicker_backend_id": self.id,
                         "clicker_id": space["id"],
-                        "task_lists_count": len(clicker_lists)
+                        "is_private": space["private"],
+                        "time_tracking": space["time_tracking"]
                     })
 
-                    self.state = "running"
+                    self.write({"state": "running"})
 
     def reset(self):
-        self.state = "authenticate"
+        self.write({"state": "authenticate"})

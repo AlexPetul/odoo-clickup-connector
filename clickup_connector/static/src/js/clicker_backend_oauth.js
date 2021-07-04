@@ -12,7 +12,7 @@ odoo.define('clickup_connector.ClickerBackendAuthFormView', function (require) {
 
         _openOauthUri: function (e) {
             let clientID = $("textarea[name='client_id']").val();
-            window.location.href = `https://app.clickup.com/api?client_id=${clientID}&redirect_uri=https://localhost:8069/web`;
+            window.location.href = `https://app.clickup.com/api?client_id=${clientID}&redirect_uri=http://localhost:8069/oauth`;
         }
     });
 

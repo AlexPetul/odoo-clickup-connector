@@ -17,9 +17,13 @@
                                 <div class="o_kanban_card_content">
                                     <div class="o_kanban_primary_left">
                                         <div class="o_primary">
-                                            <span><t t-esc="record.name.value"/></span>
+                                            <span>
+                                                <t t-esc="record.name.value"/>
+                                            </span>
                                             <span t-if="record.clicker_backend_id">
-                                                <strong><t t-esc="record.clicker_backend_id.value"/></strong>
+                                                <strong>
+                                                    <t t-esc="record.clicker_backend_id.value"/>
+                                                </strong>
                                             </span>
                                         </div>
                                     </div>
@@ -37,7 +41,9 @@
                                         <ul class="oe_kanban_colorpicker" data-field="color" role="popup"/>
                                     </div>
                                 </div>
-                                <a class="o_kanban_manage_toggle_button o_left" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                                <a class="o_kanban_manage_toggle_button o_left" href="#">
+                                    <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
+                                </a>
                             </div>
                             <div class="o_project_kanban_boxes">
                                 <a class="o_project_kanban_box">
@@ -46,7 +52,9 @@
                                         <span class="o_label">Tasks</span>
                                     </div>
                                     <div class="col-md-4 kanban-tasks-count">
-                                        <span class="o_value"><t t-esc="record.folders_count.value"/></span>
+                                        <span class="o_value">
+                                            <t t-esc="record.folders_count.value"/>
+                                        </span>
                                         <span class="o_label">Folders</span>
                                     </div>
                                     <div class="col-md-3 kanban-tasks-count">
@@ -66,8 +74,20 @@
         <field name="name">clicker.space.form</field>
         <field name="model">clicker.space</field>
         <field name="arch" type="xml">
-            <form string="ClickUp Space">
+            <form string="ClickUp Space" js_class="tasks_selector">
+                <header>
+                    <button class="open_tasks_selector oe_highlight" string="Import Tasks"/>
+                </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button
+                                class="oe_stat_button"
+                                type="object"
+                                name="action_open_imported_tasks"
+                                icon="fa-cubes">
+                            <field string="Imported" name="imported_tasks_count" widget="statinfo"/>
+                        </button>
+                    </div>
                     <label for="name" class="oe_edit_only"/>
                     <h1>
                         <field name="name" class="oe_inline"/>
@@ -75,8 +95,19 @@
                     <group>
                         <group>
                             <field name="clicker_backend_id"/>
+                            <field name="is_private"/>
+                            <field name="time_tracking"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page id="webhooks_tab" string="Webhooks">
+                            <group>
+                                <field name="task_created"/>
+                                <field name="task_updated"/>
+                                <field name="task_deleted"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

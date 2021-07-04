@@ -20,7 +20,12 @@
         "views/clicker_spaces_views.xml",
         "views/res_config_settings_views.xml",
     ],
-    "demo": ["demo/clicker_backend_demo.xml"],
+    "demo": [
+        "demo/clicker_backend_demo.xml",
+    ],
+    "qweb": [
+        "static/src/xml/tasks_hierarchy_templates.xml",
+    ],
     "installable": True,
     "auto_install": False,
     "application": True,

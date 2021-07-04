@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates>
+
+    <t t-name="TasksHierarchy.ListLine">
+        <tr class="o_data_row list_row" folded="true" t-att-list-id="list_item.id">
+            <td class="o_list_record_selector">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" t-att-id="'checkbox-' + list_item.id" t-att-list-id="list_item.id"
+                           class="custom-control-input list_checkbox"/>
+                    <label t-att-for="'checkbox-' + list_item.id" class="custom-control-label"/>
+                </div>
+            </td>
+            <td class="o_data_cell o_field_cell o_readonly_modifier" folded="true" t-att-list-id="list_item.id">
+                <i class="fa fa-caret-right" t-att-list-id="list_item.id" role="img"></i>
+                <t t-esc="list_item.name"/>
+            </td>
+        </tr>
+
+        <t t-foreach="list_item.tasks" t-as="task">
+            <t t-call="TasksHierarchy.TaskLine"/>
+        </t>
+
+    </t>
+
+    <t t-name="TasksHierarchy.TaskLine">
+        <tr class="o_data_row task_row folded" t-att-task-id="task.id" t-att-list-id="task.list.id">
+            <td class="o_list_record_selector">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" t-att-id="'checkbox-' + task.id" t-att-line-id="task.id"
+                           class="custom-control-input task_checkbox"/>
+                    <label t-att-for="'checkbox-' + task.id" class="custom-control-label"/>
+                </div>
+            </td>
+            <td class="o_data_cell o_field_cell o_readonly_modifier task_name" tabindex="-1">
+                <t t-esc="task.name"/>
+            </td>
+        </tr>
+    </t>
+
+    <t t-name="TasksHierarchy">
+        <div role="dialog" class="modal o_legacy_dialog o_technical_modal show" tabindex="-1" data-backdrop="static"
+             id="modal_911" open="open" aria-modal="true" style="display: block;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <header class="modal-header">
+                        <h4 class="modal-title">Select tasks to import
+                            <span class="o_subtitle text-muted small"></span>
+                        </h4>
+                        <button type="button" class="close close_modal" data-dismiss="modal" tabindex="-1" aria-label="Close">×</button>
+                    </header>
+                    <main class="modal-body o_act_window">
+                        <div class="o_action o_view_controller">
+                            <div class="o_content">
+                                <div class="o_list_view o_list_optional_columns">
+                                    <div class="table-responsive">
+                                        <table class="o_list_table table table-sm table-hover table-striped o_list_table_ungrouped hierarchy_table"
+                                               style="table-layout: fixed;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="o_list_record_selector">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" id="checkbox-global"
+                                                                   class="custom-control-input"/>
+                                                            <label for="checkbox-global" class="custom-control-label">​
+                                                            </label>
+                                                        </div>
+                                                    </th>
+                                                    <th data-name="date" tabindex="-1" class="o_column_sortable"
+                                                        data-original-title="" title="">Name
+                                                        <span class="o_resize"></span>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-foreach="data" t-as="list_item">
+                                                    <t t-call="TasksHierarchy.ListLine"/>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                    <footer class="modal-footer">
+                        <div>
+                            <footer>
+                                <button type="button" class="btn btn-primary import_tasks">
+                                    <span>Import</span>
+                                </button>
+                                <button type="button" class="btn btn-secondary close_modal">
+                                    <span>Discard</span>
+                                </button>
+                            </footer>
+                        </div>
+                    </footer>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

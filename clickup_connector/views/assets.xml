@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <template id="assets_backend" inherit_id="web.assets_backend">
         <xpath expr="//link[last()]">
             <link href="/clickup_connector/static/src/scss/clicker_styles.scss" type="text/scss" rel="stylesheet"/>
 
             <script type="text/javascript" src="/clickup_connector/static/src/js/clicker_backend_oauth.js"/>
+            <script type="text/javascript" src="/clickup_connector/static/src/js/tasks_selector.js"/>
         </xpath>
     </template>
 </odoo>
