@@ -1,5 +1,6 @@
 from odoo import api, models, fields, _
 from itertools import groupby
+import asyncio
 
 from ..service.requests_manager import RequestsManager
 
@@ -54,7 +55,18 @@ class ClickerSpace(models.Model):
         return clicker_lists
 
     def import_tasks(self, task_ids):
-        pass
+        request_manager = RequestsManager(self.env, self.clicker_backend_id.token)
+
+        loop = None
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        finally:
+            for task_id in task_ids:
+                response = loop.run_until_complete(request_manager.get_task_by_task_id_async(task_id))
+                print(response)
 
     def action_open_imported_tasks(self):
         pass

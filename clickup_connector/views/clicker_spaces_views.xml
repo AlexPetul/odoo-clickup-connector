@@ -93,10 +93,12 @@
                         <field name="name" class="oe_inline"/>
                     </h1>
                     <group>
-                        <group>
+                        <group name="main_space_info" string="Main Information">
                             <field name="clicker_backend_id"/>
                             <field name="is_private"/>
                             <field name="time_tracking"/>
+                        </group>
+                        <group name="space_configuration" string="Configuration">
                         </group>
                     </group>
                     <notebook>
