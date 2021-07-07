@@ -10,6 +10,7 @@
                 <field name="name"/>
                 <field name="folders_count"/>
                 <field name="clicker_backend_id"/>
+                <field name="imported_tasks_count"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.raw_value) : ''}} oe_kanban_card oe_kanban_global_click">
@@ -46,20 +47,10 @@
                                 </a>
                             </div>
                             <div class="o_project_kanban_boxes">
-                                <a class="o_project_kanban_box">
+                                <a class="o_project_kanban_box" name="action_open_imported_tasks" type="object">
                                     <div class="col-md-4 kanban-tasks-count">
-                                        <span class="o_value">1</span>
+                                        <span class="o_value"><t t-esc="record.imported_tasks_count.value"/></span>
                                         <span class="o_label">Tasks</span>
-                                    </div>
-                                    <div class="col-md-4 kanban-tasks-count">
-                                        <span class="o_value">
-                                            <t t-esc="record.folders_count.value"/>
-                                        </span>
-                                        <span class="o_label">Folders</span>
-                                    </div>
-                                    <div class="col-md-3 kanban-tasks-count">
-                                        <span class="o_value">1</span>
-                                        <span class="o_label">Lists</span>
                                     </div>
                                 </a>
                             </div>
@@ -85,7 +76,7 @@
                                 type="object"
                                 name="action_open_imported_tasks"
                                 icon="fa-cubes">
-                            <field string="Imported" name="imported_tasks_count" widget="statinfo"/>
+                            <field name="imported_tasks_count" widget="statinfo"/>
                         </button>
                     </div>
                     <label for="name" class="oe_edit_only"/>
@@ -99,6 +90,7 @@
                             <field name="time_tracking"/>
                         </group>
                         <group name="space_configuration" string="Configuration">
+                            <field name="default_status"/>
                         </group>
                     </group>
                     <notebook>

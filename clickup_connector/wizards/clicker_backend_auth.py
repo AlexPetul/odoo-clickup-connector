@@ -17,7 +17,7 @@ class ClickerBackendAuth(models.TransientModel):
         headers = {"User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.89 Safari/537.36"}
         oauth_uri = f'https://app.clickup.com/api?client_id={self.client_id}&redirect_uri=https://localhost:8069/web'
 
-    def authenticate_with_token(self):
+    def authenticate_with_token(self) -> None:
         request_manager = RequestsManager(self.env, self.token)
         response, status_code = request_manager.get_teams()
         if status_code == 200:

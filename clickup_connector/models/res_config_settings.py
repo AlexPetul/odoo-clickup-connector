@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 
 
 class ResConfigSettings(models.TransientModel):
@@ -9,7 +9,7 @@ class ResConfigSettings(models.TransientModel):
     enable_webhooks = fields.Boolean(string="Enable Webhooks", config_parameter="clickup_connector.enable_webhooks")
 
     @api.model
-    def get_values(self):
+    def get_values(self) -> dict:
         res = super(ResConfigSettings, self).get_values()
 
         ir_config = self.env["ir.config_parameter"].sudo()
@@ -25,7 +25,7 @@ class ResConfigSettings(models.TransientModel):
 
         return res
 
-    def set_values(self):
+    def set_values(self) -> None:
         super(ResConfigSettings, self).set_values()
 
         ir_config = self.env["ir.config_parameter"].sudo()

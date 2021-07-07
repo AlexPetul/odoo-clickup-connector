@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import _, api, fields, models
 
 from ..service.requests_manager import RequestsManager
 
@@ -34,11 +34,11 @@ class ClickerBackend(models.Model):
     space_ids_count = fields.Integer(compute="_compute_space_ids_count")
 
     @api.depends("space_ids")
-    def _compute_space_ids_count(self):
+    def _compute_space_ids_count(self) -> None:
         for record in self:
             record.space_ids_count = len(record.space_ids)
 
-    def action_open_space_ids(self):
+    def action_open_space_ids(self) -> dict:
         return {
             "name": _("Spaces"),
             "type": "ir.actions.act_window",
@@ -48,7 +48,7 @@ class ClickerBackend(models.Model):
             "domain": [("clicker_backend_id", "=", self.id)]
         }
 
-    def activate(self):
+    def activate(self) -> None:
         request_manager = RequestsManager(self.env, self.token)
         response, status = request_manager.get_teams()
         if status == 200:
@@ -65,5 +65,5 @@ class ClickerBackend(models.Model):
 
                     self.write({"state": "running"})
 
-    def reset(self):
+    def reset(self) -> None:
         self.write({"state": "authenticate"})
