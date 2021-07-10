@@ -6,6 +6,7 @@
 
             <script type="text/javascript" src="/clickup_connector/static/src/js/clicker_backend_oauth.js"/>
             <script type="text/javascript" src="/clickup_connector/static/src/js/tasks_selector.js"/>
+            <script type="text/javascript" src="/clickup_connector/static/src/js/backend_dialog.js"/>
         </xpath>
     </template>
 </odoo>

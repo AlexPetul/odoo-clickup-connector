@@ -13,9 +13,7 @@ persistent_session = requests.Session()
 
 class RequestsManager:
 
-    def __init__(self, env: Environment, token: str) -> None:
-        self.handler = lambda x, params=None: self.execute_request(x, params)
-
+    def __init__(self, env: Environment, token: str = None) -> None:
         self._base_api_uri = env["ir.config_parameter"].sudo().get_param("clickup_connector.clicker_api_uri")
         self._headers = {"Accept": "application/json, text/html", "Authorization": token}
 
@@ -24,12 +22,15 @@ class RequestsManager:
             async with session.get(url=f"{self._base_api_uri}{relative_path}") as async_resp:
                 return await async_resp.json()
 
-    def execute_request(self, relative_path: str, params=None) -> Union[tuple, None]:
+    def execute_request(self, relative_path: str, method: str = "GET", body: dict = None, params: dict = None) -> Union[tuple, None]:
+        print(f"{self._base_api_uri}{relative_path}")
         try:
-            response = persistent_session.get(
+            response = persistent_session.request(
+                method=method,
                 url=f"{self._base_api_uri}{relative_path}",
-                params=params,
-                headers=self._headers
+                headers=self._headers,
+                data=body,
+                params=params
             )
             _logger.info("Request sent to %s %d", response.url, response.status_code)
         except requests.exceptions.RequestException as e:
@@ -41,7 +42,16 @@ class RequestsManager:
     def get_teams(self) -> Union[tuple, None]:
         return self.execute_request("team")
 
-    async def get_task_by_task_id_async(self, task_id: str):
+    def get_access_token(self, params: dict) -> Union[tuple, None]:
+        return self.execute_request("oauth/token", method="POST", params=params)
+
+    def create_web_hook(self, team_id, endpoints: dict) -> Union[tuple, None]:
+        return self.execute_request(f"team/{team_id}/webhook", method="POST", body=endpoints)
+
+    def get_web_hooks_by_team_id(self, team_id: str) -> Union[tuple, None]:
+        return self.execute_request(f"team/{team_id}/webhook")
+
+    async def get_task_by_task_id_async(self, task_id: str) -> dict:
         return await self.execute_async_request(f"task/{task_id}")
 
     def get_tasks_by_list_id(self, list_id: str) -> Union[tuple, None]:

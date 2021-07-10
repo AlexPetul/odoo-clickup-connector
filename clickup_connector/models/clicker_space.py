@@ -6,32 +6,40 @@ from odoo import _, api, fields, models
 from odoo.exceptions import UserError
 
 from ..service.requests_manager import RequestsManager
+from ..controllers.webhooks import WebHookManager
 
 
 class ClickerSpace(models.Model):
     _name = "clicker.space"
+    _description = "Click Up space model"
 
     name = fields.Char(string="Name")
     color = fields.Integer(string="Color Index")
-    clicker_backend_id = fields.Many2one(comodel_name="clicker.backend", string="Workspace")
-    clicker_id = fields.Char(size=32)
-    owner_id = fields.Many2one(comodel_name="res.users", string="Owner")
+    clicker_backend_id = fields.Many2one(comodel_name="clicker.backend", string="Workspace", readonly=True)
+    clicker_id = fields.Char(size=32, readonly=True)
+    team_id = fields.Char(size=32, readonly=True)
     task_ids = fields.One2many(comodel_name="clicker.task", inverse_name="space_id", string="Tasks")
-    task_ids_count = fields.Integer(string="Tasks Count")
-    folders_count = fields.Integer(string="Folders")
-    task_lists_count = fields.Integer(string="Lists")
     imported_tasks_count = fields.Integer(string="Tasks", compute="_compute_imported_tasks_count")
     is_private = fields.Boolean(string="Private", default=False, readonly=True)
     time_tracking = fields.Boolean(string="Time Tracking", default=False, readonly=True)
-    default_status = fields.Many2one(
-        string="Default Status",
-        comodel_name="project.task.type",
-        help="If status name wasn't found in Odoo, then task will be moved to this status."
-    )
+    default_status = fields.Many2one(string="Default Status", comodel_name="project.task.type",
+                                     help="If status name wasn't found in Odoo, then task will be moved to this status.")
+    task_created_hook = fields.Boolean(string="Task Created", default=False)
+    task_updated_hook = fields.Boolean(string="Task Updated", default=False)
+    task_deleted_hook = fields.Boolean(string="Task Deleted", default=False)
 
-    task_created = fields.Boolean(default=False)
-    task_updated = fields.Boolean(default=False)
-    task_deleted = fields.Boolean(default=False)
+    def write(self, vals: dict) -> bool:
+        hook_fields = {key: val for key, val in vals.items() if "hook" in key}
+        if hook_fields:
+            request_manager = RequestsManager(self.env, self.clicker_backend_id.token)
+            response, status = request_manager.get_web_hooks_by_team_id(self.team_id)
+            if status == 200:
+                if response:
+                    WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
+                else:
+                    WebHookManager.process_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
+
+        return super().write(vals)
 
     @staticmethod
     def _fetch_lists(request_manager: RequestsManager, clicker_space_id: str) -> list:

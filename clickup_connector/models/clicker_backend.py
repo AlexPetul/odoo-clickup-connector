@@ -8,29 +8,14 @@ class ClickerBackend(models.Model):
 
     name = fields.Char(string="Name")
     uri = fields.Char(string="ClickUp URI", required=True)
-    token = fields.Char(string="API Token")
-    company_id = fields.Many2one(
-        comodel_name="res.company",
-        string="Company",
-        required=True,
-        default=lambda self: self.env.company
-    )
-    state = fields.Selection(
-        selection=[
-            ("authenticate", "Authenticate"),
-            ("setup", "Setup"),
-            ("running", "Running"),
-        ],
-        default="authenticate",
-        required=True,
-        readonly=True
-    )
-    space_ids = fields.One2many(
-        comodel_name="clicker.space",
-        inverse_name="clicker_backend_id",
-        string="Spaces",
-        copy=False
-    )
+    token = fields.Char(string="API Token", copy=False)
+    oauth_token = fields.Char(string="Oauth Token", copy=False)
+    company_id = fields.Many2one(comodel_name="res.company", string="Company", required=True,
+                                 default=lambda self: self.env.company)
+    state = fields.Selection(selection=[("authenticate", "Authenticate"), ("setup", "Setup"), ("running", "Running")],
+                             default="authenticate", required=True, readonly=True)
+    space_ids = fields.One2many(comodel_name="clicker.space", inverse_name="clicker_backend_id", string="Spaces",
+                                copy=False)
     space_ids_count = fields.Integer(compute="_compute_space_ids_count")
 
     @api.depends("space_ids")
@@ -58,9 +43,9 @@ class ClickerBackend(models.Model):
                     self.env["clicker.space"].create({
                         "name": space["name"],
                         "clicker_backend_id": self.id,
+                        "team_id": team["id"],
                         "clicker_id": space["id"],
-                        "is_private": space["private"],
-                        "time_tracking": space["time_tracking"]
+                        "is_private": space["private"]
                     })
 
                     self.write({"state": "running"})

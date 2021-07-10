@@ -8,7 +8,6 @@
             <kanban create="0" sample="1" class="o_kanban_dashboard">
                 <field name="color"/>
                 <field name="name"/>
-                <field name="folders_count"/>
                 <field name="clicker_backend_id"/>
                 <field name="imported_tasks_count"/>
                 <templates>
@@ -96,9 +95,9 @@
                     <notebook>
                         <page id="webhooks_tab" string="Webhooks">
                             <group>
-                                <field name="task_created"/>
-                                <field name="task_updated"/>
-                                <field name="task_deleted"/>
+                                <field name="task_created_hook"/>
+                                <field name="task_updated_hook"/>
+                                <field name="task_deleted_hook"/>
                             </group>
                         </page>
                     </notebook>
