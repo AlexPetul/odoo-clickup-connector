@@ -14,7 +14,7 @@ odoo.define('clickup_connector.ClickerBackendAuthFormView', function (require) {
             let clientID = this.state.data.client_id;
             let clientSecret = this.state.data.client_secret;
             let modelId = this.state.context.active_id;
-            window.location.href = `https://app.clickup.com/api?client_id=${clientID}&redirect_uri=http://localhost:8069/oauth/${modelId}/${clientID}/${clientSecret}/`;
+            window.location.href = `https://app.clickup.com/api?client_id=${clientID}&redirect_uri=${window.location.protocol}//${window.location.host}/oauth/${modelId}/${clientID}/${clientSecret}/`;
         },
     });
 
