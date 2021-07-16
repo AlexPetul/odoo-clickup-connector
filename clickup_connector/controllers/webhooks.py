@@ -13,6 +13,10 @@ class WebHookManager(http.Controller):
         "task_deleted_hook": "taskDeleted"
     }
 
+    @http.route(["/clicker/webhook"], type="json", cors="*", auth="public", website=False)
+    def process_web_hook_request(self, *args, **kwargs):
+        pass
+
     @classmethod
     def create_web_hooks(cls, fields: dict, db_name: str, token: str, team_id: str):
         db_registry = Registry.new(db_name)
@@ -20,9 +24,11 @@ class WebHookManager(http.Controller):
             env = api.Environment(cr, SUPERUSER_ID, {})
             request_manager = RequestsManager(env, token)
             events = [value for key, value in cls.web_hooks_mapping.items() if key in fields]
-            response, status = request_manager.create_web_hook(team_id, {"events": events})
-            print(response)
+            base_url = env["ir.config_parameter"].sudo().get_param("web.base.url")
+            web_hook_url = f"{base_url}/clicker/webhook"
+            response, status = request_manager.create_web_hook(team_id, {"endpoint": web_hook_url, "events": events})
+            print(response, events)
 
     @classmethod
     def process_web_hooks(cls, fields: dict, db_name: str, token: str):
-        print(fields)
+        pass

@@ -10,8 +10,6 @@ class ClickerBackend(models.Model):
     uri = fields.Char(string="ClickUp URI", required=True)
     token = fields.Char(string="API Token", copy=False)
     oauth_token = fields.Char(string="Oauth Token", copy=False)
-    company_id = fields.Many2one(comodel_name="res.company", string="Company", required=True,
-                                 default=lambda self: self.env.company)
     state = fields.Selection(selection=[("authenticate", "Authenticate"), ("setup", "Setup"), ("running", "Running")],
                              default="authenticate", required=True, readonly=True)
     space_ids = fields.One2many(comodel_name="clicker.space", inverse_name="clicker_backend_id", string="Spaces",

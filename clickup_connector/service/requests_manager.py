@@ -15,7 +15,11 @@ class RequestsManager:
 
     def __init__(self, env: Environment, token: str = None) -> None:
         self._base_api_uri = env["ir.config_parameter"].sudo().get_param("clickup_connector.clicker_api_uri")
-        self._headers = {"Accept": "application/json, text/html", "Authorization": token}
+        self._headers = {
+            "Accept": "application/json, text/html",
+            "Content-Type": "application/json",
+            "Authorization": token
+        }
 
     async def execute_async_request(self, relative_path: str) -> dict:
         async with aiohttp.ClientSession(headers=self._headers) as session:
@@ -23,17 +27,16 @@ class RequestsManager:
                 return await async_resp.json()
 
     def execute_request(self, relative_path: str, method: str = "GET", body: dict = None, params: dict = None) -> Union[tuple, None]:
-        print(f"{self._base_api_uri}{relative_path}")
         try:
             response = persistent_session.request(
                 method=method,
                 url=f"{self._base_api_uri}{relative_path}",
                 headers=self._headers,
-                data=body,
+                json=body,
                 params=params
             )
             _logger.info("Request sent to %s %d", response.url, response.status_code)
-        except requests.exceptions.RequestException as e:
+        except (requests.exceptions.RequestException, Exception) as e:
             _logger.error("Request failed: %s" % e.response)
             raise UserError(_("Something went wrong while sending request. Please, try again."))
 

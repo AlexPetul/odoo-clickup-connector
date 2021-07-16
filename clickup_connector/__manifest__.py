@@ -15,10 +15,10 @@
         "security/security.xml",
         'wizards/clicker_backend_auth_wizard.xml',
         "views/assets.xml",
-        "views/menu.xml",
         "views/clicker_backend_views.xml",
         "views/clicker_spaces_views.xml",
         "views/res_config_settings_views.xml",
+        "views/menu.xml",
     ],
     "demo": [
         "demo/clicker_backend_demo.xml",

@@ -64,7 +64,7 @@ odoo.define('clickup_connector.TasksSelectorFormView', function (require) {
                         model: 'clicker.space',
                         method: 'import_tasks',
                         args: [resId, tasksIds]
-                    }).then(response => {
+                    }).then(_ => {
                         location.reload();
                     });
                 });

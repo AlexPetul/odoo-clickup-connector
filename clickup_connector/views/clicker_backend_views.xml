@@ -42,7 +42,6 @@
                             <field name="uri" placeholder="e.g. https://example.com/jira"/>
                         </group>
                         <group name="main_configuration" string="Main Configuration">
-                            <field name="company_id"/>
                         </group>
                     </group>
                 </sheet>

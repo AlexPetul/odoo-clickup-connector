@@ -31,13 +31,14 @@ class ClickerSpace(models.Model):
     def write(self, vals: dict) -> bool:
         hook_fields = {key: val for key, val in vals.items() if "hook" in key}
         if hook_fields:
-            request_manager = RequestsManager(self.env, self.clicker_backend_id.token)
+            request_manager = RequestsManager(self.env, self.clicker_backend_id.oauth_token)
             response, status = request_manager.get_web_hooks_by_team_id(self.team_id)
-            if status == 200:
-                if response:
-                    WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
-                else:
-                    WebHookManager.process_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
+            print(response)
+            # if status == 200:
+            #     if response:
+            #         WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
+            #     else:
+            #         WebHookManager.process_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
 
         return super().write(vals)
 
