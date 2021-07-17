@@ -13,9 +13,9 @@ class WebHookManager(http.Controller):
         "task_deleted_hook": "taskDeleted"
     }
 
-    @http.route(["/clicker/webhook"], type="json", cors="*", auth="public", website=False)
+    @http.route(["/clicker/webhook"], type="http", cors="*", auth="public", website=False)
     def process_web_hook_request(self, *args, **kwargs):
-        pass
+        print(self)
 
     @classmethod
     def create_web_hooks(cls, fields: dict, db_name: str, token: str, team_id: str):

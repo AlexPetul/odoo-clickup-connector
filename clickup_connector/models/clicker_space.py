@@ -34,11 +34,8 @@ class ClickerSpace(models.Model):
             request_manager = RequestsManager(self.env, self.clicker_backend_id.oauth_token)
             response, status = request_manager.get_web_hooks_by_team_id(self.team_id)
             print(response)
-            # if status == 200:
-            #     if response:
-            #         WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
-            #     else:
-            #         WebHookManager.process_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
+            if status == 200:
+                WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
 
         return super().write(vals)
 
