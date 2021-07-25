@@ -57,6 +57,9 @@ class RequestsManager:
     async def get_task_by_task_id_async(self, task_id: str) -> dict:
         return await self.execute_async_request(f"task/{task_id}")
 
+    def get_task_by_id(self, task_id: str) -> Union[tuple, None]:
+        return self.execute_request(f"task/{task_id}")
+
     def get_tasks_by_list_id(self, list_id: str) -> Union[tuple, None]:
         return self.execute_request(f"list/{list_id}/task")
 

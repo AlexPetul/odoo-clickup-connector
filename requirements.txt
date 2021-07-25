@@ -1,2 +1,0 @@
-odooku-odoo-addons==11.0.7
-odooku==11.0.14

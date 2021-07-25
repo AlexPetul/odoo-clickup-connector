@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 from typing import Union
 
-from odoo import _, api, fields, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 from ..service.requests_manager import RequestsManager
@@ -24,6 +24,7 @@ class ClickerSpace(models.Model):
     time_tracking = fields.Boolean(string="Time Tracking", default=False, readonly=True)
     default_status = fields.Many2one(string="Default Status", comodel_name="project.task.type",
                                      help="If status name wasn't found in Odoo, then task will be moved to this status.")
+    log_ids = fields.One2many(comodel_name="clicker.log", inverse_name="space_id", readonly="1", copy=False)
     task_created_hook = fields.Boolean(string="Task Created", default=False)
     task_updated_hook = fields.Boolean(string="Task Updated", default=False)
     task_deleted_hook = fields.Boolean(string="Task Deleted", default=False)
@@ -71,7 +72,7 @@ class ClickerSpace(models.Model):
     @staticmethod
     def _get_datetime_from_unix_timestamp(timestamp: str) -> Union[datetime, bool]:
         try:
-            return datetime.fromtimestamp(int(timestamp)/1000)
+            return datetime.fromtimestamp(int(timestamp) / 1000)
         except (TypeError, Exception):
             return False
 

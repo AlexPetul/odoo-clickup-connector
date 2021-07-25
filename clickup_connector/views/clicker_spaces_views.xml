@@ -93,6 +93,16 @@
                         </group>
                     </group>
                     <notebook>
+                        <page id="logs_tab" string="Log History">
+                            <group>
+                                <field name="log_ids" nolabel="1">
+                                    <tree>
+                                        <field name="date"/>
+                                        <field name="message"/>
+                                    </tree>
+                                </field>
+                            </group>
+                        </page>
                         <page id="webhooks_tab" string="Webhooks">
                             <group>
                                 <field name="task_created_hook"/>
