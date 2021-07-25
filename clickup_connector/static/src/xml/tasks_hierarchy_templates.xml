@@ -40,7 +40,7 @@
 
     <t t-name="TasksHierarchy">
         <div role="dialog" class="modal o_legacy_dialog o_technical_modal show" tabindex="-1" data-backdrop="static"
-             id="modal_911" open="open" aria-modal="true" style="display: block;">
+             id="modal_911" open="open" aria-modal="true" style="display: block; background-color: rgba(0, 0, 0, 0.5);">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <header class="modal-header">
