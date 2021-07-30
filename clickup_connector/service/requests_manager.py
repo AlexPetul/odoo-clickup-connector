@@ -48,6 +48,9 @@ class RequestsManager:
     def get_access_token(self, params: dict) -> Union[tuple, None]:
         return self.execute_request("oauth/token", method="POST", params=params)
 
+    def delete_web_hook(self, webhook_id: str) -> Union[tuple, None]:
+        return self.execute_request(f"webhook/{webhook_id}", method="DELETE")
+
     def create_web_hook(self, team_id, endpoints: dict) -> Union[tuple, None]:
         return self.execute_request(f"team/{team_id}/webhook", method="POST", body=endpoints)
 

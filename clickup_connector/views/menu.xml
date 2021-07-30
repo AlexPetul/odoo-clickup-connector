@@ -4,18 +4,21 @@
     <menuitem id="project_clicker_menu"
               name="ClickUp"
               parent="project.menu_main_pm"
+              groups="clickup_connector.group_project_click_up_management"
               sequence="100"/>
 
     <menuitem id="project_clicker_backends_menu_item"
               name="Backends"
               parent="project_clicker_menu"
               sequence="2"
+              groups="clickup_connector.group_project_click_up_management"
               action="project_clicker_backends_menu_action"/>
 
     <menuitem id="project_clicker_spaces_menu_item"
               name="Spaces"
               parent="project_clicker_menu"
               sequence="1"
+              groups="clickup_connector.group_project_click_up_management"
               action="project_clicker_spaces_menu_action"/>
 
 </odoo>

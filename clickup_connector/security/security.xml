@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="group_project_click_up_management" model="res.groups">
+        <field name="name">Click Up Management</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
 </odoo>

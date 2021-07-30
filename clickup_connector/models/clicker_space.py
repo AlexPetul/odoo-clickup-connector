@@ -9,6 +9,14 @@ from ..service.requests_manager import RequestsManager
 from ..controllers.webhooks import WebHookManager
 
 
+class ClickerWebhook(models.Model):
+    _name = "clicker.webhook"
+
+    webhook_id = fields.Char()
+    method = fields.Char()
+    space_id = fields.Many2one(comodel_name="clicker.space")
+
+
 class ClickerSpace(models.Model):
     _name = "clicker.space"
     _description = "Click Up space model"
@@ -23,8 +31,9 @@ class ClickerSpace(models.Model):
     is_private = fields.Boolean(string="Private", default=False, readonly=True)
     time_tracking = fields.Boolean(string="Time Tracking", default=False, readonly=True)
     default_status = fields.Many2one(string="Default Status", comodel_name="project.task.type",
-                                     help="If status name wasn't found in Odoo, then task will be moved to this status.")
+                                     help="If status name do not exist in Odoo, task will be moved to this status.")
     log_ids = fields.One2many(comodel_name="clicker.log", inverse_name="space_id", readonly="1", copy=False)
+    webhook_ids = fields.One2many(comodel_name="clicker.webhook", inverse_name="space_id")
     task_created_hook = fields.Boolean(string="Task Created", default=False)
     task_updated_hook = fields.Boolean(string="Task Updated", default=False)
     task_deleted_hook = fields.Boolean(string="Task Deleted", default=False)
@@ -34,9 +43,11 @@ class ClickerSpace(models.Model):
         if hook_fields:
             request_manager = RequestsManager(self.env, self.clicker_backend_id.oauth_token)
             response, status = request_manager.get_web_hooks_by_team_id(self.team_id)
-            print(response)
             if status == 200:
-                WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
+                if not response["webhooks"]:
+                    WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
+                else:
+                    WebHookManager.process_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token)
 
         return super().write(vals)
 
