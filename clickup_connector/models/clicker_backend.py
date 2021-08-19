@@ -1,6 +1,6 @@
 from odoo import _, api, fields, models
 
-from ..service.requests_manager import RequestsManager
+from ..clickup.requests_manager import RequestsManager
 
 
 class ClickerBackend(models.Model):
@@ -32,7 +32,7 @@ class ClickerBackend(models.Model):
         }
 
     def activate(self) -> None:
-        request_manager = RequestsManager(self.env, self.token)
+        request_manager = RequestsManager(self.env, self.token or self.oauth_token)
         response, status = request_manager.get_teams()
         if status == 200:
             for team in response.get("teams", []):

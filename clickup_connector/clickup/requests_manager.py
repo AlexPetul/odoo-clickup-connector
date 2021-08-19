@@ -6,12 +6,14 @@ import requests
 from odoo import _
 from odoo.api import Environment
 from odoo.exceptions import UserError
+from .exceptions import ClickupApiException
 
 _logger = logging.getLogger(__name__)
 persistent_session = requests.Session()
 
 
 class RequestsManager:
+    __slots__ = ["_base_api_uri", "_headers"]
 
     def __init__(self, env: Environment, token: str = None) -> None:
         self._base_api_uri = env["ir.config_parameter"].sudo().get_param("clickup_connector.clicker_api_uri")
@@ -20,6 +22,9 @@ class RequestsManager:
             "Content-Type": "application/json",
             "Authorization": token
         }
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self._base_api_uri})"
 
     async def execute_async_request(self, relative_path: str) -> dict:
         async with aiohttp.ClientSession(headers=self._headers) as session:
@@ -36,8 +41,9 @@ class RequestsManager:
                 params=params
             )
             _logger.info("Request sent to %s %d", response.url, response.status_code)
-        except (requests.exceptions.RequestException, Exception) as e:
-            _logger.error("Request failed: %s" % e.response)
+        except ClickupApiException as e:
+            raise ClickupApiException(e)
+        except Exception as d:
             raise UserError(_("Something went wrong while sending request. Please, try again."))
 
         return response.json(), response.status_code

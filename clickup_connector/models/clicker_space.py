@@ -5,7 +5,7 @@ from typing import Union
 from odoo import _, fields, models
 from odoo.exceptions import UserError
 
-from ..service.requests_manager import RequestsManager
+from ..clickup.requests_manager import RequestsManager
 from ..controllers.webhooks import WebHookManager
 
 
@@ -19,20 +19,20 @@ class ClickerWebhook(models.Model):
 
 class ClickerSpace(models.Model):
     _name = "clicker.space"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
     _description = "Click Up space model"
 
     name = fields.Char(string="Name")
     color = fields.Integer(string="Color Index")
     clicker_backend_id = fields.Many2one(comodel_name="clicker.backend", string="Workspace", readonly=True)
-    clicker_id = fields.Char(size=32, readonly=True)
-    team_id = fields.Char(size=32, readonly=True)
+    clicker_id = fields.Char(string="Clickup ID", size=32, readonly=True)
+    team_id = fields.Char(string="Team ID", size=32, readonly=True)
     task_ids = fields.One2many(comodel_name="clicker.task", inverse_name="space_id", string="Tasks")
     imported_tasks_count = fields.Integer(string="Tasks", compute="_compute_imported_tasks_count")
     is_private = fields.Boolean(string="Private", default=False, readonly=True)
     time_tracking = fields.Boolean(string="Time Tracking", default=False, readonly=True)
     default_status = fields.Many2one(string="Default Status", comodel_name="project.task.type",
                                      help="If status name do not exist in Odoo, task will be moved to this status.")
-    log_ids = fields.One2many(comodel_name="clicker.log", inverse_name="space_id", readonly="1", copy=False)
     webhook_ids = fields.One2many(comodel_name="clicker.webhook", inverse_name="space_id")
     task_created_hook = fields.Boolean(string="Task Created", default=False)
     task_updated_hook = fields.Boolean(string="Task Updated", default=False)
@@ -70,7 +70,7 @@ class ClickerSpace(models.Model):
         return lists
 
     def get_tasks_hierarchy(self) -> list:
-        request_manager = RequestsManager(self.env, self.clicker_backend_id.token)
+        request_manager = RequestsManager(self.env, self.clicker_backend_id.token or self.clicker_backend_id.oauth_token)
         folder_lists = self._fetch_folder_lists(request_manager, self.clicker_id)
         raw_lists = self._fetch_lists(request_manager, self.clicker_id)
         clicker_lists = [*folder_lists, *raw_lists]
@@ -102,7 +102,7 @@ class ClickerSpace(models.Model):
         if not task_ids:
             raise UserError(_("Please, choose at least one task or press 'Discard'."))
 
-        request_manager = RequestsManager(self.env, self.clicker_backend_id.token)
+        request_manager = RequestsManager(self.env, self.clicker_backend_id.token or self.clicker_backend_id.oauth_token)
 
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)

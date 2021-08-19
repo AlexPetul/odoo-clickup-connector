@@ -1,12 +1,11 @@
 import json
 
-from odoo import http
+from odoo import api, http, SUPERUSER_ID
 from odoo.http import request
 from odoo.modules.registry import Registry
-from odoo import api, SUPERUSER_ID
 
-from ..service.requests_manager import RequestsManager
-from ..models import constants as const
+from ..clickup.requests_manager import RequestsManager
+from ..clickup import constants as const
 
 
 class WebHookManager(http.Controller):

@@ -1,7 +1,7 @@
 from odoo import http
 from odoo.http import request
 
-from ..service.requests_manager import RequestsManager
+from ..clickup.requests_manager import RequestsManager
 
 
 class OAuthRedirectController(http.Controller):

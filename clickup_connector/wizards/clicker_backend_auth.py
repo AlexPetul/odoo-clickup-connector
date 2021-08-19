@@ -1,7 +1,7 @@
-from odoo import api, fields, models, _
+from odoo import fields, models, _
 from odoo.exceptions import UserError
 
-from ..service.requests_manager import RequestsManager
+from ..clickup.requests_manager import RequestsManager
 
 
 class ClickerBackendAuth(models.TransientModel):

@@ -60,6 +60,19 @@
         </field>
     </record>
 
+    <record id="clicker_space_tree_view" model="ir.ui.view">
+        <field name="name">clicker.space.tree</field>
+        <field name="model">clicker.space</field>
+        <field name="arch" type="xml">
+            <tree create="0">
+                <field name="name"/>
+                <field name="clicker_id"/>
+                <field name="team_id"/>
+                <field name="is_private"/>
+            </tree>
+        </field>
+    </record>
+
     <record id="clicker_space_form_view" model="ir.ui.view">
         <field name="name">clicker.space.form</field>
         <field name="model">clicker.space</field>
@@ -93,16 +106,6 @@
                         </group>
                     </group>
                     <notebook>
-                        <page id="logs_tab" string="Log History">
-                            <group>
-                                <field name="log_ids" nolabel="1">
-                                    <tree>
-                                        <field name="date"/>
-                                        <field name="message"/>
-                                    </tree>
-                                </field>
-                            </group>
-                        </page>
                         <page id="webhooks_tab" string="Webhooks">
                             <group>
                                 <field name="task_created_hook"/>
@@ -112,6 +115,11 @@
                         </page>
                     </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>

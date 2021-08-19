@@ -1,6 +1,6 @@
 from odoo import api, fields, models
 
-from ..models import constants as const
+from ..clickup import constants as const
 
 
 class ResConfigSettings(models.TransientModel):
