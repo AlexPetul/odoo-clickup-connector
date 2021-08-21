@@ -47,8 +47,8 @@ class ClickerSpace(models.Model):
                 if not response["webhooks"]:
                     WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
                 else:
-                    WebHookManager.process_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token)
-
+                    WebHookManager.process_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, response["webhooks"])
+            self.message_post(body=_("Webhook event list updated."))
         return super().write(vals)
 
     @staticmethod

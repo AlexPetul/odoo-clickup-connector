@@ -43,8 +43,8 @@ class RequestsManager:
             _logger.info("Request sent to %s %d", response.url, response.status_code)
         except ClickupApiException as e:
             raise ClickupApiException(e)
-        except Exception as d:
-            raise UserError(_("Something went wrong while sending request. Please, try again."))
+        except Exception as e:
+            raise UserError(_(e))
 
         return response.json(), response.status_code
 
@@ -53,6 +53,9 @@ class RequestsManager:
 
     def get_access_token(self, params: dict) -> Union[tuple, None]:
         return self.execute_request("oauth/token", method="POST", params=params)
+
+    def update_web_hook(self, webhook_id: str, data: dict) -> Union[tuple, None]:
+        return self.execute_request(f"webhook/{webhook_id}", method="PUT", body=data)
 
     def delete_web_hook(self, webhook_id: str) -> Union[tuple, None]:
         return self.execute_request(f"webhook/{webhook_id}", method="DELETE")

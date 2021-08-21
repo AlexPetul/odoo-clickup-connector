@@ -32,7 +32,7 @@
                     <label t-att-for="'checkbox-' + task.id" class="custom-control-label"/>
                 </div>
             </td>
-            <td class="o_data_cell o_field_cell o_readonly_modifier task_name" tabindex="-1">
+            <td class="o_data_cell o_field_cell o_readonly_modifier task_name" tabindex="-1" style="padding-left: 30px;">
                 <t t-esc="task.name"/>
             </td>
         </tr>

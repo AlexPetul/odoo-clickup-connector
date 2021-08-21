@@ -49,7 +49,7 @@ class WebHookManager(http.Controller):
         self.get_method_by_event(data["event"])(data)
 
     @classmethod
-    def create_web_hooks(cls, fields: dict, db_name: str, token: str, team_id: str):
+    def create_web_hooks(cls, fields: dict, db_name: str, token: str, team_id: str) -> None:
         db_registry = Registry.new(db_name=db_name)
         with api.Environment.manage(), db_registry.cursor() as cr:
             env = api.Environment(cr=cr, uid=SUPERUSER_ID, context={})
@@ -62,10 +62,26 @@ class WebHookManager(http.Controller):
             response, status = request_manager.create_web_hook(team_id, {"endpoint": web_hook_url, "events": events})
             if status == 200:
                 env["clicker.webhook"].create({
-                    "webhook_id": response["id"],
-                    "team_id": response["webhook"]["space_id"]
+                    "webhook_id": response["id"]
                 })
 
     @classmethod
-    def process_web_hooks(cls, fields: dict, db_name: str, token: str):
-        pass
+    def process_web_hooks(cls, fields: dict, db_name: str, token: str, webhooks: list):
+        db_registry = Registry.new(db_name=db_name)
+        with api.Environment.manage(), db_registry.cursor() as cr:
+            env = api.Environment(cr=cr, uid=SUPERUSER_ID, context={})
+            base_url = env["ir.config_parameter"].sudo().get_param("web.base.url")
+            for hook in webhooks:
+                if base_url in hook["endpoint"]:
+                    for field, enable in fields.items():
+                        event = cls.web_hooks_mapping[field]
+                        if enable:
+                            hook["events"].append(event)
+                        else:
+                            hook["events"].remove(event)
+
+                    request_manager = RequestsManager(env, token)
+                    data = {"endpoint": hook["endpoint"], "status": "active", "events": hook["events"]}
+                    response, status = request_manager.update_web_hook(hook["id"], data)
+                    break
+
