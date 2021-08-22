@@ -29,7 +29,7 @@ class WebHookManager(http.Controller):
     def create_task_hook(self, data: dict) -> None:
         task_id = data["task_id"]
         space_id = self.env["clicker.webhook"].search([("webhook_id", "=", data["webhook_id"])]).space_id
-        request_manager = RequestsManager(self.env, space_id.backend_id.oauth_token)
+        request_manager = RequestsManager(self.env, space_id.clicker_backend_id.oauth_token)
         response, status = request_manager.get_task_by_id(task_id)
         if status == 200:
             space_id = response["space"]["id"]
