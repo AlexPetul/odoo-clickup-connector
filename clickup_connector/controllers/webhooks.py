@@ -16,7 +16,7 @@ class WebHookManager(http.Controller):
         "task_deleted_hook": "taskDeleted"
     }
 
-    def get_method_by_event(self, event):
+    def get_method_by_event(self, event: str) -> callable:
         methods = {
             "taskCreated": self.create_task_hook,
             "taskUpdated": self.update_task_hook,
@@ -41,9 +41,9 @@ class WebHookManager(http.Controller):
 
     @staticmethod
     def delete_task_hook(data: dict) -> None:
-        request.env["project.task"].search([("clicker_task_id", "=", data["task_id"])], limit=1).unlink()
+        request.env["project.task"].search([("clicker_task_id", "=", data["task_id"])], limit=1).sudo().unlink()
 
-    @http.route(["/clicker/webhook"], type="json", cors="*", auth="public", website=False)
+    @http.route("/clicker/webhook", type="json", cors="*", auth="public", website=False)
     def process_web_hook_request(self, *args, **kwargs):
         data = json.loads(request.httprequest.data.decode("UTF-8"))
         self.get_method_by_event(data["event"])(data)
@@ -62,7 +62,8 @@ class WebHookManager(http.Controller):
             response, status = request_manager.create_web_hook(team_id, {"endpoint": web_hook_url, "events": events})
             if status == 200:
                 env["clicker.webhook"].create({
-                    "webhook_id": response["id"]
+                    "webhook_id": response["id"],
+                    "space_id": response["space_id"]
                 })
 
     @classmethod

@@ -55,7 +55,7 @@ class ClickerSpace(models.Model):
     def _fetch_lists(request_manager: RequestsManager, clicker_space_id: str) -> list:
         response, status = request_manager.get_lists_by_space_id(clicker_space_id)
         if status == 200:
-            return response.get("lists", [])
+            return list(filter(lambda x: int(x["task_count"]) > 0, response.get("lists", [])))
 
     @staticmethod
     def _fetch_folder_lists(request_manager: RequestsManager, clicker_space_id: str) -> list:
@@ -74,10 +74,11 @@ class ClickerSpace(models.Model):
         folder_lists = self._fetch_folder_lists(request_manager, self.clicker_id)
         raw_lists = self._fetch_lists(request_manager, self.clicker_id)
         clicker_lists = [*folder_lists, *raw_lists]
+        existing_ids = self.env["project.task"].search([]).mapped("clicker_task_id")
         for clicker_list in clicker_lists:
             response, status = request_manager.get_tasks_by_list_id(clicker_list["id"])
             if status == 200:
-                clicker_list["tasks"] = response.get("tasks", [])
+                clicker_list["tasks"] = list(filter(lambda x: x["id"] not in existing_ids, response.get("tasks", [])))
         return clicker_lists
 
     @staticmethod
