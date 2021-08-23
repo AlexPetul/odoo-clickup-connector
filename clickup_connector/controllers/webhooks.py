@@ -57,9 +57,7 @@ class WebHookManager(http.Controller):
         events = [value for key, value in cls.web_hooks_mapping.items() if key in kwargs["fields"]]
 
         request_manager = RequestsManager(cls.env, kwargs["token"])
-        response, status = request_manager.create_web_hook(kwargs["team_id"], endpoints={
-            "endpoint": web_hook_url, "events": events, "space_id": kwargs["space_id"]
-        })
+        response, status = request_manager.create_web_hook(kwargs["team_id"], {"endpoint": web_hook_url, "events": events})
         if status == 200:
             cls.env["clicker.webhook"].create({
                 "webhook_id": response["id"],
