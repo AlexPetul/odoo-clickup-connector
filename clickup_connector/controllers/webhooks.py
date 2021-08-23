@@ -35,18 +35,32 @@ class WebHookManager(http.Controller):
             space_id = response["space"]["id"]
             self.env["clicker.space"].search([("clicker_id", "=", space_id)], limit=1).import_tasks([task_id])
 
-    @staticmethod
-    def update_task_hook(data: dict) -> None:
-        pass
+    @api_method
+    def update_task_hook(self, data: dict) -> None:
+        task_id = self.env["project.task"].search([("clicker_task_id", "=", data["task_id"])], limit=1)
+        space_id = self.env["clicker.webhook"].search([("webhook_id", "=", data["webhook_id"])]).space_id
+        request_manager = RequestsManager(self.env, space_id.clicker_backend_id.oauth_token)
+        task, status = request_manager.get_task_by_id(task_id.clicker_task_id)
+        if status == 200:
+            space = self.env["clicker.space"].search([("clicker_id", "=", task["space"]["id"])], limit=1)
+            task_data = {
+                "stage_id": self.env["project.task.type"].search([("name", "ilike", task["status"]["status"])], limit=1),
+                "date_deadline": space.get_datetime_from_unix_timestamp(task["due_date"]),
+                "user_id": space.get_user_by_username_or_email(task["assignees"]),
+                "description": task["description"],
+                "name": task["name"]
+            }
+            for field, value in task_data.items():
+                if getattr(task_id, field) != value:
+                    task_id.write({field: value})
 
     @api_method
     def delete_task_hook(self, data: dict) -> None:
         self.env["project.task"].search([("clicker_task_id", "=", data["task_id"])], limit=1).sudo().unlink()
 
     @http.route(const.BASE_WEBHOOK_URL, type="json", cors="*", auth="public", website=False)
-    def process_web_hook_request(self, *args, **kwargs):
+    def process_web_hook_request(self, *args, **kwargs) -> None:
         data = json.loads(request.httprequest.data.decode("UTF-8"))
-        print(data)
         self.get_method_by_event(data["event"])(data)
 
     @classmethod
@@ -66,7 +80,7 @@ class WebHookManager(http.Controller):
 
     @classmethod
     @api_method
-    def process_web_hooks(cls, **kwargs):
+    def process_web_hooks(cls, **kwargs) -> None:
         base_url = cls.env["ir.config_parameter"].sudo().get_param("web.base.url")
         for hook in kwargs["webhooks"]:
             if base_url in hook["endpoint"]:
@@ -81,4 +95,4 @@ class WebHookManager(http.Controller):
                 request_manager.update_web_hook(hook["id"], data={
                     "endpoint": hook["endpoint"], "status": "active", "events": hook["events"]
                 })
-                break
+                return None
