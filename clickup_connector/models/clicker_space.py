@@ -44,19 +44,17 @@ class ClickerSpace(models.Model):
         if hook_fields:
             request_manager = RequestsManager(self.env, self.clicker_backend_id.oauth_token)
             response, status = request_manager.get_web_hooks_by_team_id(self.team_id)
-            kwargs = {
-                "fields": hook_fields,
-                "db_name": self.env.cr.dbname,
-                "token": self.clicker_backend_id.oauth_token,
-                "team_id": self.team_id,
-                "space_id": self.id
-            }
             if status == 200:
                 if not response["webhooks"]:
-                    WebHookManager.create_web_hooks(kwargs)
+                    WebHookManager.create_web_hooks(
+                        fields=hook_fields, db_name=self.env.cr.dbname, space_id=self.id,
+                        team_id=self.team_id, token=self.clicker_backend_id.oauth_token
+                    )
                 else:
-                    kwargs["webhooks"] = response["webhooks"]
-                    WebHookManager.process_web_hooks(kwargs)
+                    WebHookManager.process_web_hooks(
+                        fields=hook_fields, db_name=self.env.cr.dbname, space_id=self.id,
+                        team_id=self.team_id, token=self.clicker_backend_id.oauth_token, webhooks=response["webhooks"]
+                    )
         return super().write(vals)
 
     @staticmethod
