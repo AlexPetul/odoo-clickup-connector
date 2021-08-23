@@ -78,6 +78,7 @@ class WebHookManager(http.Controller):
                         hook["events"].remove(event)
 
                 request_manager = RequestsManager(cls.env, kwargs["token"])
-                data = {"endpoint": hook["endpoint"], "status": "active", "events": hook["events"]}
-                response, status = request_manager.update_web_hook(hook["id"], data)
+                request_manager.update_web_hook(hook["id"], data={
+                    "endpoint": hook["endpoint"], "status": "active", "events": hook["events"]
+                })
                 break
