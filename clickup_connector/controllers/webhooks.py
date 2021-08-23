@@ -61,7 +61,7 @@ class WebHookManager(http.Controller):
         if status == 200:
             cls.env["clicker.webhook"].create({
                 "webhook_id": response["id"],
-                "space_id": response["space_id"]
+                "space_id": kwargs["space_id"]
             })
 
     @classmethod
