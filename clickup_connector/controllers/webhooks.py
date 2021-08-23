@@ -51,13 +51,15 @@ class WebHookManager(http.Controller):
 
     @classmethod
     @api_method
-    def create_web_hooks(cls, fields: dict, db_name: str, token: str, team_id: str) -> None:
+    def create_web_hooks(cls, **kwargs) -> None:
         base_url = cls.env["ir.config_parameter"].sudo().get_param("web.base.url")
         web_hook_url = f"{base_url}{const.BASE_WEBHOOK_URL}"
         events = [value for key, value in cls.web_hooks_mapping.items() if key in fields]
 
-        request_manager = RequestsManager(cls.env, token)
-        response, status = request_manager.create_web_hook(team_id, {"endpoint": web_hook_url, "events": events})
+        request_manager = RequestsManager(cls.env, kwargs["token"])
+        response, status = request_manager.create_web_hook(kwargs["team_id"], endpoints={
+            "endpoint": web_hook_url, "events": events, "space_id": kwargs["space_id"]
+        })
         if status == 200:
             cls.env["clicker.webhook"].create({
                 "webhook_id": response["id"],
@@ -66,18 +68,18 @@ class WebHookManager(http.Controller):
 
     @classmethod
     @api_method
-    def process_web_hooks(cls, fields: dict, db_name: str, token: str, webhooks: list):
+    def process_web_hooks(cls, **kwargs):
         base_url = cls.env["ir.config_parameter"].sudo().get_param("web.base.url")
-        for hook in webhooks:
+        for hook in kwargs["webhooks"]:
             if base_url in hook["endpoint"]:
-                for field, enable in fields.items():
+                for field, enable in kwargs["fields"].items():
                     event = cls.web_hooks_mapping[field]
                     if enable:
                         hook["events"].append(event)
                     else:
                         hook["events"].remove(event)
 
-                request_manager = RequestsManager(cls.env, token)
+                request_manager = RequestsManager(cls.env, kwargs["token"])
                 data = {"endpoint": hook["endpoint"], "status": "active", "events": hook["events"]}
                 response, status = request_manager.update_web_hook(hook["id"], data)
                 break

@@ -9,7 +9,7 @@ def api_method(func):
     @wraps(func)
     def closure(*args, **kwargs):
         try:
-            db_registry = Registry.new(db_name=args[2])
+            db_registry = Registry.new(db_name=kwargs.get("db_name"))
         except (IndexError, Exception):
             db_registry = Registry.new(db_name=config["db_name"])
         with api.Environment.manage(), db_registry.cursor() as cr:
