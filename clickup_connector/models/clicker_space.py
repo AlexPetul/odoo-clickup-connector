@@ -33,11 +33,17 @@ class ClickerSpace(models.Model):
     time_tracking = fields.Boolean(string="Time Tracking", default=False, readonly=True)
     default_status = fields.Many2one(string="Default Status", comodel_name="project.task.type",
                                      help="If status name do not exist in Odoo, task will be moved to this status.")
-    webhook_ids = fields.One2many(comodel_name="clicker.webhook", inverse_name="space_id")
 
     task_created_hook = fields.Boolean(string="Task Created", default=False)
     task_updated_hook = fields.Boolean(string="Task Updated", default=False)
     task_deleted_hook = fields.Boolean(string="Task Deleted", default=False)
+
+    def unlink(self) -> bool:
+        request_manager = RequestsManager(self.env, self.clicker_backend_id.oauth_token)
+        for record in self:
+            for webhook in self.env["clicker.webhook"].search([("space_id", "=", record.id)]):
+                response, status = request_manager.delete_web_hook(webhook.webhook_id)
+        return super().unlink()
 
     def write(self, vals: dict) -> bool:
         hook_fields = {key: val for key, val in vals.items() if "hook" in key}
