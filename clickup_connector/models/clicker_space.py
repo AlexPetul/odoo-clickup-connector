@@ -34,6 +34,7 @@ class ClickerSpace(models.Model):
     default_status = fields.Many2one(string="Default Status", comodel_name="project.task.type",
                                      help="If status name do not exist in Odoo, task will be moved to this status.")
     webhook_ids = fields.One2many(comodel_name="clicker.webhook", inverse_name="space_id")
+
     task_created_hook = fields.Boolean(string="Task Created", default=False)
     task_updated_hook = fields.Boolean(string="Task Updated", default=False)
     task_deleted_hook = fields.Boolean(string="Task Deleted", default=False)
@@ -48,7 +49,6 @@ class ClickerSpace(models.Model):
                     WebHookManager.create_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, self.team_id)
                 else:
                     WebHookManager.process_web_hooks(hook_fields, self.env.cr.dbname, self.clicker_backend_id.oauth_token, response["webhooks"])
-            self.message_post(body=_("Webhook event list updated."))
         return super().write(vals)
 
     @staticmethod

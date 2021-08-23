@@ -43,9 +43,10 @@ class WebHookManager(http.Controller):
     def delete_task_hook(self, data: dict) -> None:
         self.env["project.task"].search([("clicker_task_id", "=", data["task_id"])], limit=1).sudo().unlink()
 
-    @http.route("/clicker/webhook", type="json", cors="*", auth="public", website=False)
+    @http.route(const.BASE_WEBHOOK_URL, type="json", cors="*", auth="public", website=False)
     def process_web_hook_request(self, *args, **kwargs):
         data = json.loads(request.httprequest.data.decode("UTF-8"))
+        print(data)
         self.get_method_by_event(data["event"])(data)
 
     @classmethod
