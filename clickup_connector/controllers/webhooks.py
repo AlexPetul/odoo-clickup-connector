@@ -54,7 +54,7 @@ class WebHookManager(http.Controller):
     def create_web_hooks(cls, **kwargs) -> None:
         base_url = cls.env["ir.config_parameter"].sudo().get_param("web.base.url")
         web_hook_url = f"{base_url}{const.BASE_WEBHOOK_URL}"
-        events = [value for key, value in cls.web_hooks_mapping.items() if key in fields]
+        events = [value for key, value in cls.web_hooks_mapping.items() if key in kwargs["fields"]]
 
         request_manager = RequestsManager(cls.env, kwargs["token"])
         response, status = request_manager.create_web_hook(kwargs["team_id"], endpoints={
