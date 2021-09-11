@@ -84,13 +84,16 @@ class ClickerSpace(models.Model):
         request_manager = RequestsManager(self.env, self.clicker_backend_id.token or self.clicker_backend_id.oauth_token)
         folder_lists = self._fetch_folder_lists(request_manager, self.clicker_id)
         raw_lists = self._fetch_lists(request_manager, self.clicker_id)
-        clicker_lists = [*folder_lists, *raw_lists]
+        clicker_lists = folder_lists + raw_lists
         existing_ids = self.env["project.task"].search([]).mapped("clicker_task_id")
         for clicker_list in clicker_lists:
             response, status = request_manager.get_tasks_by_list_id(clicker_list["id"])
             if status == 200:
                 clicker_list["tasks"] = list(filter(lambda x: x["id"] not in existing_ids, response.get("tasks", [])))
-        return clicker_lists
+        result = list(filter(lambda x: x["tasks"], clicker_lists))
+        if not result:
+            raise UserError(_("Nothing to import."))
+        return result
 
     @staticmethod
     def get_datetime_from_unix_timestamp(timestamp: str) -> Union[datetime, bool]:
@@ -99,15 +102,15 @@ class ClickerSpace(models.Model):
         except (TypeError, Exception):
             return False
 
-    def get_user_by_username_or_email(self, clicker_users: list) -> Union[int, bool]:
+    def get_user_by_username_or_email(self, clicker_user: dict) -> Union[int, bool]:
         try:
             return self.env["res.users"].search([
                 "|",
-                ("email", "=", clicker_users[0]["email"]),
-                ("login", "=", clicker_users[0]["email"]),
-                ("name", "ilike", clicker_users[0]["username"])
+                ("email", "=", clicker_user["email"]),
+                ("login", "=", clicker_user["email"]),
+                ("name", "ilike", clicker_user["username"])
             ], limit=1).id
-        except (IndexError, AttributeError, Exception):
+        except (AttributeError, Exception):
             return False
 
     def import_tasks(self, task_ids: list) -> None:
@@ -126,7 +129,7 @@ class ClickerSpace(models.Model):
             if not ProjectTask.search_count([("clicker_task_id", "=", clicker_task["id"])]):
                 status = ProjectTaskType.search([("name", "ilike", clicker_task["status"]["status"])], limit=1)
                 due_date = self.get_datetime_from_unix_timestamp(clicker_task["due_date"])
-                assignee_id = self.get_user_by_username_or_email(clicker_task["assignees"])
+                assignee_id = self.get_user_by_username_or_email(next(iter(clicker_task["assignees"]), False))
 
                 ProjectTask.create({
                     "clicker_task_id": clicker_task["id"],

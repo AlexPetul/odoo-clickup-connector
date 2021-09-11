@@ -46,10 +46,11 @@ class WebHookManager(http.Controller):
             task_data = {
                 "stage_id": self.env["project.task.type"].search([("name", "ilike", task["status"]["status"])], limit=1),
                 "date_deadline": space.get_datetime_from_unix_timestamp(task["due_date"]),
-                "user_id": space.get_user_by_username_or_email(task["assignees"]),
+                "user_id": space.get_user_by_username_or_email(next(iter(task["assignees"]), False)),
                 "description": task["description"],
                 "name": task["name"]
             }
+
             for field, value in task_data.items():
                 if getattr(task_id, field) != value:
                     task_id.write({field: value})
