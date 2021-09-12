@@ -11,8 +11,8 @@
         "project",
     ],
     "data": [
-        "security/ir.model.access.csv",
         "security/security.xml",
+        "security/ir.model.access.csv",
         'wizards/clicker_backend_auth_wizard.xml',
         "views/assets.xml",
         "views/clicker_backend_views.xml",

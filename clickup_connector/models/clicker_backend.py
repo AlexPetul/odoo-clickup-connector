@@ -43,8 +43,8 @@ class ClickerBackend(models.Model):
                 user_id = self.env["res.users"].create({
                     "name": member["user"]["username"],
                     "login": member["user"]["email"]
-                })
-            self.member_ids = [(4, user_id.id)]
+                }).id
+            self.member_ids = [(4, user_id)]
 
     def activate(self) -> None:
         request_manager = RequestsManager(self.env, self.token or self.oauth_token)

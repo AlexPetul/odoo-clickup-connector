@@ -7,10 +7,14 @@ from ..clickup.requests_manager import RequestsManager
 class ClickerBackendAuth(models.TransientModel):
     _name = "clicker.backend.auth"
 
-    method = fields.Selection(selection=[("oauth", "OAuth 2.0"), ("token", "API Token")], default="oauth", required=True)
     token = fields.Char(string="API Token")
     client_id = fields.Char(string="Client ID")
     client_secret = fields.Char(string="Client Secret")
+    method = fields.Selection(selection=[
+        ("oauth", "OAuth 2.0"),
+        ("token", "API Token")
+    ], default="oauth", required=True,
+        help="It is recommended to use OAuth 2.0 to get full functional access (e.g: webhooks)")
 
     def authenticate_with_token(self) -> None:
         request_manager = RequestsManager(self.env, self.token)
