@@ -6,6 +6,8 @@ from ..clickup.requests_manager import RequestsManager
 
 class ClickerBackend(models.Model):
     _name = "clicker.backend"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _description = "Clickup model to provide authentication backends"
 
     name = fields.Char(string="Name")
     uri = fields.Char(string="ClickUp URI", required=True)

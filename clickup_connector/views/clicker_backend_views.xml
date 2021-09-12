@@ -7,10 +7,12 @@
         <field name="arch" type="xml">
             <form string="ClickUp Backend">
                 <header>
-                    <button name="%(action_clicker_auth)d" type="action" class="oe_highlight" string="Authenticate" states="authenticate"/>
-                    <button name="activate" type="object" class="oe_highlight" string="Activate" states="setup"/>
+                    <button name="%(action_clicker_auth)d" type="action" class="oe_highlight" string="Authenticate"
+                            states="authenticate" groups="clickup_connector.group_clickup_administrator"/>
+                    <button name="activate" type="object" class="oe_highlight" string="Activate" states="setup"
+                            groups="clickup_connector.group_clickup_administrator"/>
                     <button name="import_members" type="object" class="oe_highlight" string="Import Members"
-                            attrs="{'invisible': [('member_ids_count', '!=', 0)]}"/>
+                            groups="clickup_connector.group_clickup_administrator" attrs="{'invisible': [('member_ids_count', '!=', 0)]}"/>
                     <button name="reset" type="object" string="Reset" states="setup,running"/>
                     <field name="state" widget="statusbar"/>
                 </header>
@@ -43,6 +45,11 @@
                         </group>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
             </form>
         </field>
     </record>

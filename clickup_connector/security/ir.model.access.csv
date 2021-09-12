@@ -1,6 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_clicker_backend,clickup_connector.clicker.backend,clickup_connector.model_clicker_backend,base.group_user,1,1,1,1
-access_clicker_backend_auth,clickup_connector.clicker.backend.auth,clickup_connector.model_clicker_backend_auth,base.group_user,1,1,1,1
-access_clicker_space,clickup_connector.clicker.space,clickup_connector.model_clicker_space,base.group_user,1,1,1,1
-access_clicker_task,clickup_connector.clicker.task,clickup_connector.model_clicker_task,base.group_user,1,1,1,1
-access_clicker_webhook,clickup_connector.clicker.webhook,clickup_connector.model_clicker_webhook,base.group_user,1,1,1,1
+access_user_clicker_backend,clickup_connector.user.clicker.backend,clickup_connector.model_clicker_backend,clickup_connector.group_clickup_user,1,0,0,0
+access_administrator_clicker_backend,clickup_connector.administrator.clicker.backend,clickup_connector.model_clicker_backend,clickup_connector.group_clickup_administrator,1,1,1,1
+access_clicker_backend_auth,clickup_connector.clicker.backend.auth,clickup_connector.model_clicker_backend_auth,clickup_connector.group_clickup_user,1,1,1,1
+access_user_clicker_space,clickup_connector.user.clicker.space,clickup_connector.model_clicker_space,clickup_connector.group_clickup_user,1,1,0,0
+access_administrator_clicker_space,clickup_connector.administrator.clicker.space,clickup_connector.model_clicker_space,clickup_connector.group_clickup_administrator,1,1,1,1
+access_clicker_task,clickup_connector.clicker.task,clickup_connector.model_clicker_task,clickup_connector.group_clickup_user,1,1,1,1
+access_clicker_webhook,clickup_connector.clicker.webhook,clickup_connector.model_clicker_webhook,clickup_connector.group_clickup_user,1,1,1,1
